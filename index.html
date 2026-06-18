@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Портфолио — Твоё Имя</title>
+    <title>Портфолио — Dynas</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -23,7 +23,7 @@
 
             <div class="project-card">
                 <h3>🧠 Dynas AI</h3>
-                <p>Голосовой AI-помощник с погодой,  и частицами.</p>
+                <p>Голосовой AI-помощник с погодой, мемами и частицами. Работает локально на ПК и телефоне.</p>
             </div>
 
             <div class="project-card">
@@ -51,141 +51,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Segoe UI', sans-serif;
-    background: #070b14;
-    color: #e0e8f0;
-    display: flex;
-    justify-content: center;
-    padding: 40px 20px;
-    min-height: 100vh;
-}
-
-.container {
-    max-width: 800px;
-    width: 100%;
-    background: rgba(10, 18, 40, 0.92);
-    padding: 40px;
-    border-radius: 24px;
-    border: 1px solid rgba(0, 150, 255, 0.25);
-    box-shadow: 0 0 60px rgba(0, 100, 255, 0.12);
-    backdrop-filter: blur(4px);
-}
-
-header {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-header h1 {
-    font-size: 36px;
-    color: #4fc3ff;
-    letter-spacing: 2px;
-    text-shadow: 0 0 30px rgba(0, 150, 255, 0.3);
-}
-
-header p {
-    font-size: 18px;
-    color: #8899bb;
-}
-
-h2 {
-    color: #4fc3ff;
-    margin: 30px 0 15px;
-    font-size: 24px;
-    border-bottom: 1px solid rgba(0, 150, 255, 0.15);
-    padding-bottom: 8px;
-}
-
-.about p {
-    font-size: 16px;
-    line-height: 1.6;
-    color: #b0c4de;
-}
-
-.projects {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.project-card {
-    background: rgba(0, 100, 255, 0.06);
-    border-left: 4px solid #4fc3ff;
-    padding: 16px 20px;
-    border-radius: 12px;
-    transition: 0.3s;
-    box-shadow: 0 0 20px rgba(0, 100, 255, 0.03);
-}
-
-.project-card:hover {
-    background: rgba(0, 100, 255, 0.12);
-    transform: translateX(8px);
-    box-shadow: 0 0 30px rgba(0, 100, 255, 0.08);
-}
-
-.project-card h3 {
-    color: #4fc3ff;
-    font-size: 18px;
-}
-
-.project-card p {
-    color: #99b0d0;
-    font-size: 14px;
-    margin-top: 4px;
-}
-
-.contacts {
-    margin: 30px 0;
-    text-align: center;
-}
-
-.btn {
-    display: inline-block;
-    margin-top: 12px;
-    padding: 14px 36px;
-    background: linear-gradient(135deg, #0066ff, #0044cc);
-    color: white;
-    font-weight: bold;
-    border-radius: 30px;
-    text-decoration: none;
-    transition: 0.3s;
-    box-shadow: 0 0 30px rgba(0, 100, 255, 0.25);
-    border: 1px solid rgba(0, 150, 255, 0.2);
-}
-
-.btn:hover {
-    background: linear-gradient(135deg, #3388ff, #0055dd);
-    transform: scale(1.05);
-    box-shadow: 0 0 50px rgba(0, 100, 255, 0.4);
-}
-
-footer {
-    text-align: center;
-    font-size: 14px;
-    color: #445577;
-    margin-top: 30px;
-    border-top: 1px solid rgba(0, 100, 255, 0.1);
-    padding-top: 20px;
-}
-
-console.log('🔥 Портфолио загружено!');
-
-document.addEventListener('DOMContentLoaded', () => {
-    const cards = document.querySelectorAll('.project-card');
-    cards.forEach((card, i) => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(30px)';
-        setTimeout(() => {
-            card.style.transition = 'all 0.6s ease';
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0)';
-        }, 200 * i);
-    });
-});
