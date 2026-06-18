@@ -1110,7 +1110,7 @@
         right: 30px;
         width: 380px;
         max-width: 90vw;
-        max-height: 500px;
+        max-height: 580px;
         background: #0f0f0f;
         border: 1px solid rgba(0, 255, 200, 0.1);
         border-radius: 24px;
@@ -1159,8 +1159,8 @@
     .helper-messages {
         flex: 1;
         overflow-y: auto;
-        max-height: 280px;
-        margin-bottom: 12px;
+        max-height: 260px;
+        margin-bottom: 10px;
         padding-right: 4px;
     }
 
@@ -1196,6 +1196,34 @@
 
     .helper-msg.bot .msg-icon {
         margin-right: 6px;
+    }
+
+    /* ===== БЫСТРЫЕ ВОПРОСЫ ===== */
+    .helper-questions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 6px;
+        margin-bottom: 10px;
+    }
+
+    .helper-questions button {
+        background: rgba(0, 255, 200, 0.06);
+        border: 1px solid rgba(0, 255, 200, 0.08);
+        border-radius: 20px;
+        padding: 6px 14px;
+        color: #b0b0b0;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: 0.3s;
+        white-space: nowrap;
+    }
+
+    .helper-questions button:hover {
+        background: rgba(0, 255, 200, 0.12);
+        border-color: #00ffc8;
+        color: #00ffc8;
+        transform: translateY(-2px);
     }
 
     .helper-input-area {
@@ -1285,8 +1313,221 @@
             height: 52px;
             font-size: 24px;
         }
+        .helper-questions button {
+            font-size: 0.7rem;
+            padding: 4px 10px;
+        }
     }
 </style>
+
+<!-- КНОПКА ПОМОЩНИКА -->
+<button class="helper-toggle" id="helperToggle" aria-label="Помощник">🧠</button>
+
+<!-- ОКНО ЧАТА -->
+<div class="helper-chat" id="helperChat">
+    <div class="helper-header">
+        <h3>🧠 Dynas AI</h3>
+        <button class="close-btn" id="helperClose">✕</button>
+    </div>
+    <div class="helper-messages" id="helperMessages">
+        <div class="helper-msg bot">
+            <span class="msg-icon">👋</span> Привет! Я помощник Dynas. Можешь спросить про услуги, цены или просто поболтать.
+        </div>
+    </div>
+
+    <!-- ===== БЫСТРЫЕ ВОПРОСЫ ===== -->
+    <div class="helper-questions" id="helperQuestions">
+        <button data-question="Сколько стоят услуги?">💰 Цены</button>
+        <button data-question="Что ты умеешь?">🧠 Услуги</button>
+        <button data-question="Как связаться?">📩 Контакты</button>
+        <button data-question="Какие сроки?">⏳ Сроки</button>
+        <button data-question="Нужен бот">🤖 Заказать бота</button>
+    </div>
+
+    <div class="helper-input-area">
+        <input type="text" id="helperInput" placeholder="Напиши вопрос..." />
+        <button class="mic-btn" id="helperMic" aria-label="Голосовой ввод">🎤</button>
+        <button id="helperSend">➤</button>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ===== ЭЛЕМЕНТЫ =====
+        const toggleBtn = document.getElementById('helperToggle');
+        const chatWindow = document.getElementById('helperChat');
+        const closeBtn = document.getElementById('helperClose');
+        const messages = document.getElementById('helperMessages');
+        const input = document.getElementById('helperInput');
+        const sendBtn = document.getElementById('helperSend');
+        const micBtn = document.getElementById('helperMic');
+        const questions = document.querySelectorAll('#helperQuestions button');
+
+        let isOpen = false;
+        let isListening = false;
+        let recognition = null;
+
+        // ===== ОТКРЫТЬ / ЗАКРЫТЬ =====
+        toggleBtn.addEventListener('click', () => {
+            isOpen = !isOpen;
+            chatWindow.classList.toggle('open', isOpen);
+            if (isOpen) input.focus();
+        });
+
+        closeBtn.addEventListener('click', () => {
+            isOpen = false;
+            chatWindow.classList.remove('open');
+        });
+
+        // ===== ОТПРАВКА СООБЩЕНИЯ =====
+        function sendMessage(text) {
+            const msgText = text || input.value.trim();
+            if (!msgText) return;
+
+            addMessage(msgText, 'user');
+            if (!text) input.value = '';
+
+            const loadingMsg = addMessage('⏳', 'bot');
+
+            setTimeout(() => {
+                const reply = getBotReply(msgText);
+                loadingMsg.remove();
+                addMessage(reply, 'bot');
+                speak(reply);
+            }, 400);
+        }
+
+        function addMessage(text, sender) {
+            const msg = document.createElement('div');
+            msg.className = 'helper-msg ' + sender;
+            if (sender === 'bot' && text !== '⏳') {
+                msg.innerHTML = `<span class="msg-icon">🤖</span> ${text}`;
+            } else if (sender === 'bot' && text === '⏳') {
+                msg.textContent = '⏳ Думаю...';
+            } else {
+                msg.textContent = text;
+            }
+            messages.appendChild(msg);
+            messages.scrollTop = messages.scrollHeight;
+            return msg;
+        }
+
+        // ===== БАЗА ЗНАНИЙ =====
+        function getBotReply(text) {
+            const lower = text.toLowerCase();
+
+            if (lower.includes('привет') || lower.includes('здравствуй')) {
+                return 'Привет! Рад тебя видеть 👋 Чем могу помочь?';
+            }
+            if (lower.includes('цена') || lower.includes('сколько') || lower.includes('стоимость')) {
+                return '💰 У меня есть три тарифа:\n— Старт: 2 000 ₽ (бот под ключ)\n— Популярный: 5 000 ₽ (бот + AI)\n— Премиум: 10 000 ₽ (бот + AI + сайт в подарок)\nПодробнее на сайте в разделе "Тарифы".';
+            }
+            if (lower.includes('услуг') || lower.includes('что ты умеешь') || lower.includes('делаешь')) {
+                return '🧠 Я создаю Telegram-ботов, AI-помощников, сайты-визитки и автоматизацию. Любую идею превращаю в работающий код! Напиши подробнее — обсудим.';
+            }
+            if (lower.includes('контакт') || lower.includes('написать') || lower.includes('связаться')) {
+                return '📩 Связаться со мной можно в Telegram: @user_webrat или через форму на сайте. Всегда на связи!';
+            }
+            if (lower.includes('срок') || lower.includes('долго') || lower.includes('скоро')) {
+                return '⏳ Обычно проект занимает 1–3 дня. Всё зависит от сложности и обратной связи. Делаю быстро, но качественно!';
+            }
+            if (lower.includes('бот') || lower.includes('заказать')) {
+                return '🤖 Отличный выбор! Напиши мне в Telegram @user_webrat, обсудим детали: что нужно, какой функционал и сроки. Сделаю крутой бот!';
+            }
+            if (lower.includes('спасибо') || lower.includes('благодарю')) {
+                return '❤️ Всегда пожалуйста! Если будут вопросы — пиши, я здесь.';
+            }
+            if (lower.includes('пока') || lower.includes('до свидания')) {
+                return '👋 Пока! Буду ждать тебя снова. Удачи!';
+            }
+
+            return '🤔 Хм... Я ещё учусь, но ты можешь спросить про услуги, цены или просто написать в Telegram @user_webrat. Я отвечу!';
+        }
+
+        // ===== КЛИК ПО КНОПКАМ ВОПРОСОВ =====
+        questions.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const q = btn.dataset.question;
+                sendMessage(q);
+            });
+        });
+
+        // ===== ГОЛОС =====
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'ru-RU';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            recognition.onresult = (event) => {
+                const text = event.results[0][0].transcript;
+                input.value = text;
+                micBtn.classList.remove('listening');
+                micBtn.textContent = '🎤';
+                isListening = false;
+                sendMessage(text);
+            };
+
+            recognition.onerror = () => {
+                micBtn.classList.remove('listening');
+                micBtn.textContent = '🎤';
+                isListening = false;
+                addMessage('❌ Не удалось распознать голос. Попробуй ещё раз.', 'bot');
+            };
+
+            recognition.onend = () => {
+                micBtn.classList.remove('listening');
+                micBtn.textContent = '🎤';
+                isListening = false;
+            };
+        }
+
+        micBtn.addEventListener('click', () => {
+            if (!recognition) {
+                addMessage('❌ Голосовой ввод не поддерживается.', 'bot');
+                return;
+            }
+            if (isListening) {
+                recognition.stop();
+                micBtn.classList.remove('listening');
+                micBtn.textContent = '🎤';
+                isListening = false;
+                return;
+            }
+            isListening = true;
+            micBtn.textContent = '⏹️';
+            micBtn.classList.add('listening');
+            recognition.start();
+        });
+
+        // ===== ГОЛОСОВОЙ ОТВЕТ =====
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'ru-RU';
+                utterance.rate = 0.95;
+                utterance.pitch = 1.0;
+                speechSynthesis.cancel();
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        // ===== СОБЫТИЯ =====
+        sendBtn.addEventListener('click', () => sendMessage());
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Закрытие при клике вне
+        document.addEventListener('click', (e) => {
+            if (isOpen && !chatWindow.contains(e.target) && e.target !== toggleBtn) {
+                isOpen = false;
+                chatWindow.classList.remove('open');
+            }
+        });
+    })();
+</script>
 
 <!-- КНОПКА ПОМОЩНИКА -->
 <button class="helper-toggle" id="helperToggle" aria-label="Помощник">🧠</button>
