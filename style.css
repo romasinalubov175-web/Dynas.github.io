@@ -291,3 +291,18 @@ footer {
 .faq-item.active .faq-answer {
     display: block;
 }
+/* === СЧЁТЧИК ПРОСМОТРОВ === */
+.visitor-counter {
+    text-align: center;
+    padding: 12px;
+    color: #8899bb;
+    font-size: 14px;
+    border-top: 1px solid #1e3a5f;
+    margin-top: 30px;
+}
+
+.visitor-counter span {
+    color: #4fc3ff;
+    font-weight: bold;
+    font-size: 18px;
+}
