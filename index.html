@@ -3,172 +3,768 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynas — разработчик</title>
-    <link rel="stylesheet" href="style.css">
-   <link rel="icon" href="avatar_dynas.png" type="image/png">
+    <title>Dynas — разработчик AI и ботов</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="icon" href="avatar_dynas.png" type="image/png">
+    <style>
+        /* ===== БАЗА ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0b0b0b;
+            color: #ece9e1;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ===== ПАРАЛЛАКС-ФОН ===== */
+        .parallax-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at 30% 20%, #1f110b, #0b0b0b 80%);
+            z-index: -2;
+        }
+
+        .parallax-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(2px 2px at 20% 30%, rgba(212, 175, 55, 0.12), transparent),
+                radial-gradient(2px 2px at 40% 70%, rgba(212, 175, 55, 0.08), transparent),
+                radial-gradient(2px 2px at 70% 20%, rgba(212, 175, 55, 0.12), transparent),
+                radial-gradient(2px 2px at 90% 80%, rgba(212, 175, 55, 0.08), transparent);
+            background-size: 200px 200px;
+            z-index: -1;
+        }
+
+        /* ===== АНИМАЦИЯ ПОЯВЛЕНИЯ ===== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(60px);
+            transition: opacity 0.9s cubic-bezier(0.2, 0.9, 0.3, 1), transform 0.9s cubic-bezier(0.2, 0.9, 0.3, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== ШАПКА ===== */
+        .header {
+            padding: 24px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            background: rgba(11, 11, 11, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ece9e1;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: #d4af37;
+        }
+
+        .nav a {
+            color: #a8a29e;
+            text-decoration: none;
+            margin-left: 32px;
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .nav a::before {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: #d4af37;
+            transition: 0.3s;
+        }
+
+        .nav a:hover {
+            color: #ece9e1;
+        }
+
+        .nav a:hover::before {
+            width: 100%;
+        }
+
+        .nav .cta-nav {
+            background: #d4af37;
+            color: #0b0b0b;
+            padding: 8px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+
+        .nav .cta-nav::before { display: none; }
+        .nav .cta-nav:hover { background: #e8c55a; color: #0b0b0b; }
+
+        /* ===== ГЕРОЙ ===== */
+        .hero {
+            padding: 140px 0 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-text .badge {
+            display: inline-block;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            padding: 6px 20px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            color: #d4af37;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+        }
+
+        .hero-text h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.8rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .hero-text h1 span {
+            background: linear-gradient(to right, #ece9e1, #d4af37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-text p {
+            font-size: 1.1rem;
+            color: #a8a29e;
+            max-width: 440px;
+            margin-bottom: 32px;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background: #d4af37;
+            color: #0b0b0b;
+            padding: 14px 40px;
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: #e8c55a;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.2);
+        }
+
+        .btn-ghost {
+            display: inline-block;
+            padding: 14px 36px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            color: #ece9e1;
+            text-decoration: none;
+            margin-left: 12px;
+            transition: 0.3s;
+        }
+
+        .btn-ghost:hover {
+            border-color: #d4af37;
+            color: #d4af37;
+        }
+
+        .hero-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-image .avatar {
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(212, 175, 55, 0.2);
+            box-shadow: 0 0 60px rgba(212, 175, 55, 0.05);
+            transition: 0.5s;
+        }
+
+        .hero-image .avatar:hover {
+            border-color: #d4af37;
+            transform: scale(1.02);
+            box-shadow: 0 0 80px rgba(212, 175, 55, 0.1);
+        }
+
+        /* ===== СЧЁТЧИКИ ===== */
+        .stats-section {
+            padding: 40px 0 60px;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.2rem;
+            font-weight: 700;
+            color: #d4af37;
+        }
+
+        .stat-label {
+            color: #78726e;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== СЕКЦИИ ===== */
+        section {
+            padding: 60px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .section-header p {
+            color: #78726e;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* ===== НАВЫКИ ===== */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .skill-card {
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 20px;
+            padding: 24px 20px;
+            text-align: center;
+            transition: 0.4s;
+            cursor: default;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(212, 175, 55, 0.2);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .skill-card .icon {
+            font-size: 2.4rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .skill-card h4 {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .skill-card p {
+            color: #78726e;
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+
+        /* ===== ПРОЕКТЫ ===== */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 24px;
+            padding: 30px 24px;
+            transition: 0.4s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(212, 175, 55, 0.15);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .project-card .emoji {
+            font-size: 2.8rem;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .project-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .project-card p {
+            color: #a8a29e;
+            font-size: 0.95rem;
+        }
+
+        /* ===== ОТЗЫВЫ ===== */
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+        }
+
+        .review-card {
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 24px;
+            padding: 30px;
+        }
+
+        .review-card .stars {
+            color: #d4af37;
+            margin-bottom: 12px;
+        }
+
+        .review-card blockquote {
+            font-style: italic;
+            color: #c8c2bc;
+            margin-bottom: 16px;
+        }
+
+        .review-card .author {
+            font-weight: 600;
+            color: #ece9e1;
+        }
+
+        /* ===== CTA ===== */
+        .cta-section {
+            padding: 80px 0;
+            text-align: center;
+            background: linear-gradient(145deg, #0f0f0f, #0b0b0b);
+            border-top: 1px solid rgba(212, 175, 55, 0.05);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.05);
+        }
+
+        .cta-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            margin-bottom: 16px;
+        }
+
+        .cta-section p {
+            color: #78726e;
+            max-width: 480px;
+            margin: 0 auto 32px;
+        }
+
+        /* ===== КОНТАКТЫ ===== */
+        .contacts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .contacts-info .label {
+            display: block;
+            color: #78726e;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .contacts-info p {
+            margin-bottom: 16px;
+            font-size: 1.05rem;
+        }
+
+        .contacts-info a {
+            color: #d4af37;
+            text-decoration: none;
+        }
+
+        .contacts-info .social-links {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .contacts-info .social-links a {
+            color: #a8a29e;
+            transition: 0.3s;
+        }
+
+        .contacts-info .social-links a:hover {
+            color: #d4af37;
+        }
+
+        .map-container {
+            border-radius: 24px;
+            overflow: hidden;
+            height: 100%;
+            min-height: 280px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            min-height: 280px;
+            border: 0;
+        }
+
+        /* ===== ПОДВАЛ ===== */
+        .footer {
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            color: #5a5450;
+            font-size: 0.9rem;
+        }
+
+        .footer .socials {
+            margin-top: 12px;
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        .footer .socials a {
+            color: #5a5450;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .footer .socials a:hover {
+            color: #d4af37;
+        }
+
+        /* ===== АДАПТИВ ===== */
+        @media (max-width: 992px) {
+            .hero-grid { grid-template-columns: 1fr; text-align: center; gap: 40px; }
+            .hero-text p { margin: 0 auto 32px; }
+            .hero-image .avatar { width: 200px; height: 200px; }
+            .contacts-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr; gap: 16px; }
+            .hero-text h1 { font-size: 2.8rem; }
+            .section-header h2 { font-size: 2.2rem; }
+        }
+
+        @media (max-width: 768px) {
+            .header .container { flex-direction: column; gap: 12px; }
+            .nav a { margin: 0 12px; font-size: 0.85rem; }
+            .hero { padding-top: 120px; }
+            .hero-text h1 { font-size: 2.2rem; }
+            .cta-section h2 { font-size: 2rem; }
+            .projects-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
-<canvas id="particles-canvas"></canvas>
-<header class="hero">
-    <div class="avatar-container">
-        <img src="avatar.jpg" alt="Dynas" class="avatar">
-    </div>
-    <h1>🧠 Dynas</h1>
-    <p></p>
-    <a href="#projects" class="btn-hero">Смотреть проекты ↓</a>
-    <a href="#order" class="btn-hero" style="background:#00cc66; margin-top: 12px;">💼 Заказать проект</a>
-</header>
 
-<section class="about">
-    <h2>Обо мне</h2>
-    <p>Привет! Я разработчик из России. Создаю AI-помощников, ботов, сайты и приложения. Превращаю идеи в работающий код.</p>
-</section>
+    <div class="parallax-bg"></div>
 
-<section class="skills"><section class="story">
-    <h2>📖 Моя история</h2>
-    <div class="story-content">
-        <p>
-            Всё началось с того, что я хотел сделать свою жизнь проще. 
-            Мне надоело делать одно и то же руками, и я начал писать ботов.
-        </p>
-        <p>
-            Первый проект — голосовой помощник для дома. Потом — Telegram-боты, 
-            сайты, AI-решения. Каждый проект учил меня чему-то новому.
-        </p>
-        <p>
-            Сейчас я создаю продукты, которые действительно помогают людям: 
-            автоматизирую рутину, экономлю время и превращаю идеи в код.
-        </p>
-        <p class="story-signature">
-            — Dynas, разработчик
-        </p>
-    </div>
-</section>
-    <h2>Мои навыки</h2>
-    <div class="skills-grid">
-        <div class="skill">💻 Python</div>
-        <div class="skill">🤖 AI / ChatGPT</div>
-        <div class="skill">🌐 HTML / CSS</div>
-        <div class="skill">📱 Telegram боты</div>
-        <div class="skill">⚡ JavaScript</div>
-        <div class="skill">🧠 Голосовые ассистенты</div>
-    </div>
-</section>
-
-<section class="projects" id="projects">
-    <h2>Мои проекты</h2>
-    <div class="project-card">
-        <h3>🧠 Dynas AI</h3>
-        <p>Голосовой помощник с погодой, мемами и частицами. Работает локально на ПК и телефоне.</p>
-    </div>
-    <div class="project-card">
-        <h3>🤖 Telegram бот</h3>
-        <p>Умный бот с ChatGPT, который отвечает на любые вопросы, переводит и шутит.</p>
-    </div>
-    <div class="project-card">
-        <h3>🌤️ Погодный сервис</h3>
-        <p>Виджет погоды с голосовым вводом и красивой анимацией.</p>
-    </div>
-    <div class="project-card">
-        <h3>📄 Сайт-визитка</h3>
-        <p>Этот сайт — пример моей работы. Адаптивный, красивый, быстрый.</p>
-    </div>
-</section>
-
-<section class="stats">
-    <div class="stat-item">
-        <span class="stat-number">4+</span>
-        <span class="stat-label">Проектов создано</span>
-    </div>
-    <div class="stat-item">
-        <span class="stat-number">100%</span>
-        <span class="stat-label">Довольных клиентов</span>
-    </div>
-    <div class="stat-item">
-        <span class="stat-number">2026</span>
-        <span class="stat-label">Год начала</span>
-    </div>
-</section>
-
-<section class="reviews">
-    <h2>Отзывы</h2>
-    <div class="review-card">
-        <p>«Dynas сделал мне бота за 1 день! Работает отлично, всем советую.»</p>
-        <span>— Алексей</span>
-    </div>
-    <div class="review-card">
-        <p>«Классный сайт! Быстро, красиво.»</p>
-        <span>— Владимир</span>
-    </div>
-</section>
-
-<section id="order" class="order">
-    <h2>💼 Заказать проект</h2>
-    <p>Напиши мне, и я сделаю:</p>
-    <ul>
-        <li>🤖 Telegram бота под ключ</li>
-        <li>🧠 AI-помощника с голосом</li>
-        <li>🌐 Сайт-визитку или лендинг</li>
-        <li>⚡ Автоматизацию для бизнеса</li>
-    </ul>
-    <a href="https://t.me/user_webrat" target="_blank" class="btn" style="background:#00cc66;">📩 Написать в Telegram</a>
-</section>
-<section class="faq">
-    <h2>❓ Часто задаваемые вопросы</h2><p class="faq-subtitle">Ответы на главные вопросы</p>
-    <p class="faq-subtitle">Ответы на главные вопросы</p>
-
-    <div class="faq-item active">
-        <div class="faq-question">
-            <span class="faq-icon">💰</span>
-            Сколько стоят твои услуги?
+    <!-- ===== ШАПКА ===== -->
+    <header class="header">
+        <div class="container">
+            <a href="#" class="logo">Dynas <span>.</span></a>
+            <nav class="nav">
+                <a href="#skills">Навыки</a>
+                <a href="#projects">Проекты</a>
+                <a href="#reviews">Отзывы</a>
+                <a href="#contacts">Контакты</a>
+                <a href="#cta" class="cta-nav">Связаться</a>
+            </nav>
         </div>
-        <div class="faq-answer">Стоимость зависит от сложности. Бот — от 2000 ₽, сайт — от 3000 ₽, AI-помощник — от 5000 ₽. Пиши, обсудим!</div>
-    </div>
+    </header>
 
-    <div class="faq-item">
-        <div class="faq-question">
-            <span class="faq-icon">⏱️</span>
-            Как долго ты делаешь проект?
+    <!-- ===== ГЕРОЙ ===== -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-text reveal">
+                    <div class="badge">🚀 Разработчик AI и ботов</div>
+                    <h1>Создаю умные <br><span>решения для бизнеса</span></h1>
+                    <p>Telegram-боты, AI-помощники, сайты и автоматизация. Превращаю идеи в работающий код.</p>
+                    <div>
+                        <a href="#cta" class="btn-primary">Написать</a>
+                        <a href="#projects" class="btn-ghost">Мои проекты</a>
+                    </div>
+                </div>
+                <div class="hero-image reveal">
+                    <img src="avatar_dynas.png" alt="Dynas" class="avatar" onerror="this.style.display='none'; this.parentElement.innerHTML='🧑‍💻';">
+                </div>
+            </div>
         </div>
-        <div class="faq-answer">Обычно 1–3 дня. Всё зависит от сложности и твоей обратной связи.</div>
-    </div>
+    </section>
 
-    <div class="faq-item">
-        <div class="faq-question">
-            <span class="faq-icon">🛡️</span>
-            Даёшь ли ты гарантию?
+    <!-- ===== СЧЁТЧИКИ ===== -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item reveal">
+                    <div class="stat-number" data-target="4">0</div>
+                    <div class="stat-label">проектов создано</div>
+                </div>
+                <div class="stat-item reveal">
+                    <div class="stat-number" data-target="100">0</div>
+                    <div class="stat-label">% довольных клиентов</div>
+                </div>
+                <div class="stat-item reveal">
+                    <div class="stat-number" data-target="2026">0</div>
+                    <div class="stat-label">год начала</div>
+                </div>
+            </div>
         </div>
-        <div class="faq-answer">Да, 1 месяц бесплатной поддержки и исправлений после сдачи проекта.</div>
-    </div>
+    </section>
 
-    <div class="faq-item">
-        <div class="faq-question">
-            <span class="faq-icon">💳</span>
-            Как я могу оплатить?
+    <!-- ===== НАВЫКИ ===== -->
+    <section id="skills">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Мои навыки</h2>
+                <p>Технологии и инструменты, с которыми работаю</p>
+            </div>
+            <div class="skills-grid">
+                <div class="skill-card reveal">
+                    <span class="icon">🐍</span>
+                    <h4>Python</h4>
+                    <p>Backend, автоматизация</p>
+                </div>
+                <div class="skill-card reveal">
+                    <span class="icon">🧠</span>
+                    <h4>AI / ChatGPT</h4>
+                    <p>Интеграция нейросетей</p>
+                </div>
+                <div class="skill-card reveal">
+                    <span class="icon">🌐</span>
+                    <h4>HTML / CSS</h4>
+                    <p>Сайты-визитки</p>
+                </div>
+                <div class="skill-card reveal">
+                    <span class="icon">🤖</span>
+                    <h4>Telegram боты</h4>
+                    <p>Под ключ, с оплатой</p>
+                </div>
+                <div class="skill-card reveal">
+                    <span class="icon">⚡</span>
+                    <h4>JavaScript</h4>
+                    <p>Интерактив на сайтах</p>
+                </div>
+                <div class="skill-card reveal">
+                    <span class="icon">🎤</span>
+                    <h4>Голосовые AI</h4>
+                    <p>Ассистенты и чат-боты</p>
+                </div>
+            </div>
         </div>
-        <div class="faq-answer">Принимаю банковский перевод, криптовалюту.</div>
-    </div>
-</section>
-<section class="contacts">
-    <h2>Связаться</h2>
-    <p>Напиши мне — всегда на связи!</p>
-    <a href="https://t.me/user_webrat" target="_blank" class="btn">📩 Написать в Telegram</a>
-    <div class="socials">
-        <a href="https://github.com/Dynas-ai" target="_blank">💻 GitHub</a>
-        <a href="https://t.me/user_webrat" target="_blank">📩 Telegram</a>
-        <a href="https://www.instagram.com/dynas_ai" target="_blank">📸 Instagram</a>
-    </div>
-</section>
+    </section>
 
-<footer>
-    <p>© 2026 Dynas. Все права защищены.</p>
-</footer>
-<div class="visitor-counter">
-    👁️ Просмотров: <span id="visitCount">0</span>
-</div>
-<!-- КНОПКА НАВЕРХ -->
-<button id="backToTop" title="Наверх">⬆</button>
+    <!-- ===== ПРОЕКТЫ ===== -->
+    <section id="projects">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Мои проекты</h2>
+                <p>Реальные работающие продукты</p>
+            </div>
+            <div class="projects-grid">
+                <div class="project-card reveal">
+                    <span class="emoji">🧠</span>
+                    <h3>Dynas AI</h3>
+                    <p>Голосовой AI-помощник с погодой, мемами и частицами. Работает локально на ПК и телефоне.</p>
+                </div>
+                <div class="project-card reveal">
+                    <span class="emoji">🤖</span>
+                    <h3>Telegram-бот</h3>
+                    <p>Умный бот с ChatGPT, который отвечает на любые вопросы, переводит тексты и шутит.</p>
+                </div>
+                <div class="project-card reveal">
+                    <span class="emoji">🌤️</span>
+                    <h3>Погодный сервис</h3>
+                    <p>Виджет погоды с голосовым вводом и красивой анимацией.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<script src="script.js"></script>
-</body><canvas id="particles-canvas"></canvas>
+    <!-- ===== ОТЗЫВЫ ===== -->
+    <section id="reviews" style="background: rgba(255,255,255,0.005);">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Отзывы</h2>
+                <p>Что говорят те, кто уже работает со мной</p>
+            </div>
+            <div class="reviews-grid">
+                <div class="review-card reveal">
+                    <div class="stars">⭐ ⭐ ⭐ ⭐ ⭐</div>
+                    <blockquote>«Сделал бота за 1 день! Работает отлично, всем советую.»</blockquote>
+                    <div class="author">— Алексей</div>
+                </div>
+                <div class="review-card reveal">
+                    <div class="stars">⭐ ⭐ ⭐ ⭐ ⭐</div>
+                    <blockquote>«Классный сайт! Быстро, красиво, всё как я хотел.»</blockquote>
+                    <div class="author">— Мария</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CTA ===== -->
+    <section class="cta-section" id="cta">
+        <div class="container">
+            <h2 class="reveal">Есть идея?</h2>
+            <p class="reveal">Напиши мне — и я превращу её в работающий продукт.</p>
+            <a href="https://t.me/user_webrat" target="_blank" class="btn-primary reveal">📩 Написать в Telegram</a>
+        </div>
+    </section>
+
+    <!-- ===== КОНТАКТЫ ===== -->
+    <section id="contacts">
+        <div class="container">
+            <div class="contacts-grid">
+                <div class="contacts-info reveal">
+                    <h2 style="font-family: 'Playfair Display', serif; font-size: 2.4rem; margin-bottom: 20px;">Контакты</h2>
+                    <p><span class="label">📩 Telegram</span> <a href="https://t.me/user_webrat" target="_blank">@user_webrat</a></p>
+                    <p><span class="label">🌐 Сайт</span> <a href="https://Dynas-ai.github.io">Dynas-ai.github.io</a></p>
+                    <div class="social-links">
+                        <a href="#">GitHub</a>
+                        <a href="#">Instagram</a>
+                        <a href="#">VK</a>
+                    </div>
+                </div>
+                <div class="map-container reveal">
+                    <iframe
+                        src="https://yandex.ru/maps/?ll=49.707866%2C52.974842&z=17"
+                        allowfullscreen="true"
+                        loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== ПОДВАЛ ===== -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 Dynas — разработчик AI и ботов</p>
+            <div class="socials">
+                <a href="#">GitHub</a>
+                <a href="#">Instagram</a>
+                <a href="#">VK</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // === REVEAL ===
+            const reveals = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+            reveals.forEach(el => observer.observe(el));
+
+            // === СЧЁТЧИКИ ===
+            const counters = document.querySelectorAll('.stat-number');
+            const counterObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const target = parseFloat(entry.target.dataset.target);
+                        animateCounter(entry.target, target);
+                        counterObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            counters.forEach(c => counterObserver.observe(c));
+
+            function animateCounter(el, target) {
+                let current = 0;
+                const step = Math.max(1, Math.floor(target / 60));
+                const interval = setInterval(() => {
+                    current += step;
+                    if (current >= target) {
+                        el.textContent = target;
+                        clearInterval(interval);
+                    } else {
+                        el.textContent = current;
+                    }
+                }, 20);
+            }
+        });
+    </script>
+</body>
 </html>
