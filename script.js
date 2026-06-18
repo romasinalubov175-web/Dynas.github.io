@@ -82,3 +82,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+// === СЧЁТЧИК ПРОСМОТРОВ ===
+let visits = localStorage.getItem('visits');
+if (visits === null) {
+    visits = 0;
+}
+visits = Number(visits) + 1;
+localStorage.setItem('visits', visits);
+
+document.getElementById('visitCount').textContent = visits;
